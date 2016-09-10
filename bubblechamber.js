@@ -10,7 +10,8 @@
 // four unique orbit decaying particle types.
 
 // dimensions of drawing area
-var dim =  1440;
+var dim =  1000;
+var cnv;
 
 // particle proportions
 var maxMuon = 1789;
@@ -51,7 +52,8 @@ function setup() {
                  color("#d9d1b0"), color("#fcfadf"), color("#d1d1ca"), color("#a7b1ac"), 
                  color("#879a8c"), color("#9186ad"), color("#776a8e")];
   // processing is awesome
-  createCanvas(dim,dim);
+  cnv = createCanvas(dim,dim);
+  cnv.canvas.style.border = '1px solid black';  
 //  size(dim,dim,P3D);
   background(255);
   noStroke();
@@ -514,3 +516,5 @@ Axion.prototype.move = function () {
 
 
 // the end
+
+

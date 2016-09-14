@@ -26,13 +26,21 @@ var goodcolor = [];
 // sand painters
 var sands = [] ;
 
+var pollock;
+
 // MAIN METHODS ---------------------------------------------
+function preload() {
+  
+    pollock = loadImage("images/pollockShimmering.gif");
+
+}
+
 
 function setup() {
   createCanvas(900,900);
 //  size(dimx,dimy,P3D);
   background(255);
-  takecolor("pollockShimmering.gif");
+  takecolor();
   
   begin();  
 }
@@ -95,19 +103,27 @@ function somecolor() {
 
 function takecolor() {
  
-  colorMode(HSB, 1.0); 
-  
-  var golden_ratio_conjugate = 0.618033988749895;
-  var h = random (1.0);
-  for (var i=0; i<maxpal; i++) {
+  image(pollock,0,0);
 
-      h += golden_ratio_conjugate;
-      h %= 1.0;
-      goodcolor[i] = color(h, 0.20, 0.95);
-
+  for (var x=0;x<pollock.width;x++){
+    for (var y=0;y<pollock.height;y++) {
+      var c = get(x,y);
+      var exists = false;
+      for (var n=0;n<numpal;n++) {
+        if (c==goodcolor[n]) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        // add color to pal
+        if (numpal<maxpal) {
+          goodcolor[numpal] = c;
+          numpal++;
+        }
+      }
+    }
   }
-
-  colorMode(RGB, 256); 
   
 }
 

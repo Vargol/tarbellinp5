@@ -15,6 +15,7 @@ var maxNodes;
 var nodeIcoDark;
 var nodeIcoSpec;
 var nodeIcoBase;
+var coloursgif;
 
 // collection of nodes
 var gnodes = [];
@@ -28,6 +29,15 @@ var numpal = 0;
 var goodcolor = [];
 
 var render = 0;
+
+function preload() {
+  
+  // load node icon   
+  nodeIcoDark = loadImage("images/nodeXlgDark.gif");
+  nodeIcoSpec = loadImage("images/nodeXlgSpecular.gif");
+  nodeIcoBase = loadImage("images/nodeXlgBase.gif");
+  coloursgif = loadImage("images/longshort.gif");
+}
 
 
 function setup() {
@@ -44,14 +54,10 @@ function setup() {
   
 //  size(1000,1000,P3D);
 //  size(dim,dim,P3D);
-  takecolor("longshort.gif");
+  takecolor(coloursgif);
   background(255);
   ellipseMode(CENTER);
   
-  // load node icon   
-  nodeIcoDark = loadImage("nodeXlgDark.gif");
-  nodeIcoSpec = loadImage("nodeXlgSpecular.gif");
-  nodeIcoBase = loadImage("nodeXlgBase.gif");
   
   // create all nodes
 //  gnodes = new GNode[maxNodes];
@@ -423,7 +429,9 @@ function somecolor() {
 
 function takecolor(fn) {
   var b;
-  b = loadImage(fn);
+
+  b = fn;
+
   image(b,0,0);
 
   for (var x=0;x<b.width;x++){

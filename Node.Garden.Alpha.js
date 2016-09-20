@@ -377,7 +377,7 @@ function GNode() {
     // stamp node icon down
     if (!hidden) {
       var half_mass = mass/2;
-      image(nodeIcoDark,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
+      image(nodeIcoDark,int(x-half_mass),int(y-half_mass),int(mass),int(mass));  
     }
   }
 
@@ -385,7 +385,7 @@ function GNode() {
     // stamp node specular
     if (!hidden) {
       var half_mass = mass/2;
-      image(nodeIcoSpec,int(x-half_mass),int(y-half_mass),int(mass),int(mass),LIGHTEST);  
+      image(nodeIcoSpec,int(x-half_mass),int(y-half_mass),int(mass),int(mass));  
     }
   }
 
@@ -393,7 +393,7 @@ function GNode() {
     // stamp node base
     if (!hidden) {
       var half_mass = mass/2;
-      image(nodeIcoBase,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
+      image(nodeIcoBase,int(x-half_mass),int(y-half_mass),int(mass),int(mass));  
     }
   }
       

@@ -39,7 +39,6 @@ function preload() {
   coloursgif = loadImage("images/longshort.gif");
 }
 
-
 function setup() {
   
   dim = 1000;
@@ -57,8 +56,8 @@ function setup() {
   takecolor(coloursgif);
   background(255);
   ellipseMode(CENTER);
-  
-  
+
+
   // create all nodes
 //  gnodes = new GNode[maxNodes];
   
@@ -257,50 +256,49 @@ var Spine = function (Id) {
 
 // -----------------------
 
-function GNode() {
+function GNode(Id) {
   var id;
   var x, y;
   var mass;
 
   // connections
   var numcons;
-  var maxcons = 11;
-  var cons = [];
+  var maxcons;
+  var cons;
   
   var hidden;
   
   var myc;
       
-  function GNode(Id) {
     // set identification number
-    id = Id;
+    this.id = Id;
     // create connection list
-    cons = new int[maxcons];
+    this.cons = [];
     // initialize one time
-    initSelf();
-  }
 
-  this.initSelf = function () { 
+  this.initSelf = function () {
+    this.maxcons = 11;
+    this.cons = [];
     // initialize connections
-    initConnections();
+    this.initConnections();
     // pick color
-    myc = somecolor();
-    hidden = false;
+    this.myc = somecolor();
+    this.hidden = false;
   }
   
   this.initConnections = function () {
     // set number of connections to zero
-    numcons=0;
+    this.numcons=0;
   }
   
   this.calcHidden = function () {
     // determine if hidden by larger gnode
     for (var n=0;n<numNodes;n++) {
       if (n!=id) {
-        if (gnodes[n].mass>mass) {
-          var d = dist(x,y,gnodes[n].x,gnodes[n].y);
-          if (d<abs(mass*0.321-gnodes[n].mass*0.321)) {
-              hidden = true;
+        if (gnodes[n].mass>this.mass) {
+          var d = dist(this.x,this.y,gnodes[n].x,gnodes[n].y);
+          if (d<abs(this.mass*0.321-gnodes[n].mass*0.321)) {
+              this.hidden = true;
           }
         }
       }
@@ -309,23 +307,23 @@ function GNode() {
   
   this.setPosition = function (X, Y) {
     // position self
-    x=X;
-    y=Y;
+    this.x=X;
+    this.y=Y;
   }
   
   this.setMass = function (Sz) {
     // set size
-    mass=Sz;
+    this.mass=Sz;
   }
    
   this.findRandomConnection = function () {
     // check for available connection element
-    if ((numcons<maxcons) && (numcons<mass)) {
+    if ((this.numcons<this.maxcons) && (this.numcons<this.mass)) {
       // pick other gnode at large
-      var cid = int(random(numNodes));
-      if (cid!=id) {
-        cons[numcons]=cid;
-        numcons++;
+      var cid = int(random(this.numNodes));
+      if (cid!=this.id) {
+        this.cons[this.numcons]=this.cid;
+        this.numcons++;
 //        println(id+" connected to "+cid);
       } else {
         // random connection failed
@@ -337,14 +335,14 @@ function GNode() {
   
   this.findNearConnection = function () {
     // find closest node
-    if ((numcons<maxcons) && (numcons<mass)) {
+    if ((this.numcons<this.maxcons) && (this.numcons<this.mass)) {
       // sample 5% of nodes for near connection
       var dd = dim;
       var dcid = -1;
       for (var k=0;k<(numNodes/20);k++) {
         var cid = int(random(numNodes-1));
-        var d = sqrt((x-gnodes[cid].x)*(x-gnodes[cid].x)+(y-gnodes[cid].y)*(y-gnodes[cid].y));
-        if ((d<dd) && (d<mass*6)) {
+        var d = sqrt((this.x-gnodes[cid].x)*(this.x-gnodes[cid].x)+(this.y-gnodes[cid].y)*(this.y-gnodes[cid].y));
+        if ((d<dd) && (d<this.mass*6)) {
           // closer gnode has been found
           dcid = cid;
           dd = d;
@@ -353,69 +351,73 @@ function GNode() {
     
       if (dcid>=0) {
         // close node has been found, connect to it
-        connectTo(dcid);
+        this.connectTo(dcid);
       }
     }
   }
 
   this.connectTo = function (Id) {
-    if (numcons<maxcons) {
+    if (this.numcons<this.maxcons) {
       var duplicate = false;
-      for (var n=0;n<numcons;n++) {
-        if (cons[n]==Id) {
+      for (var n=0;n<this.numcons;n++) {
+        if (this.cons[n]==Id) {
           duplicate = true;
         }
       }
       if (!duplicate) {
-        cons[numcons]=Id;
-        numcons++;  
+        this.cons[this.numcons]=Id;
+        this.numcons++;  
       }
     }
   }
                          
   this.drawNodeDark = function () {
     // stamp node icon down
-    if (!hidden) {
-      var half_mass = mass/2;
+    if (!this.hidden) {
+      var half_mass = this.mass/2;
       blend(nodeIcoDark,0,0,nodeIcoDark.width,nodeIcoDark.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
+        
     }
   }
 
   this.drawNodeSpecular = function () {
     // stamp node specular
-    if (!hidden) {
-      var half_mass = mass/2;
+    if (!this.hidden) {
+      var half_mass = this.mass/2;
       blend(nodeIcoSpec,0,0,nodeIcoSpec.width,nodeIcoSpec.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),LIGHTEST);  
     }
   }
 
   this.drawNodeBase = function () {
     // stamp node base
-    if (!hidden) {
-      var half_mass = mass/2;
+    if (!this.hidden) {
+      var half_mass = this.mass/2;
       blend(nodeIcoBase,0,0,nodeIcoBase.width,nodeIcoBase.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
     }
   }
       
                   
   this.drawConnections = function () {
-    for (var n=0;n<numcons;n++) {
+    for (var n=0;n<this.numcons;n++) {
       // calculate connection distance
-      var d = 4*dist(x,y,gnodes[cons[n]].x,gnodes[cons[n]].y);
+      var d = 4*dist(this.x,this.y,gnodes[this.cons[n]].x,gnodes[this.cons[n]].y);
       for (var i=0;i<d;i++) {
         // draw several points between connected gnodes  
         var a = i/d;
         // fuzz
         var fx = random(-0.42,0.42);
         var fy = random(-0.42,0.42);
-        var cx = fx + x+(gnodes[cons[n]].x-x)*a;
-        var cy = fy + y+(gnodes[cons[n]].y-y)*a;
+        var cx = fx + this.x+(gnodes[this.cons[n]].x-this.x)*a;
+        var cy = fy + this.y+(gnodes[this.cons[n]].y-this.y)*a;
         
-        stroke(red(myc),green(myc),blue(myc),256*(0.05+(1-sin(a*PI))*0.16));
+        stroke(red(this.myc),green(this.myc),blue(this.myc),256*(0.05+(1-sin(a*PI))*0.16));
         point(cx,cy);
       }
     }   
-  }  
+  }
+  
+  this.initSelf();
+
 }
 
 
@@ -429,9 +431,8 @@ function somecolor() {
 
 function takecolor(fn) {
   var b;
-
   b = fn;
-
+  
   image(b,0,0);
 
   for (var x=0;x<b.width;x++){

@@ -375,7 +375,7 @@ function GNode(Id) {
     // stamp node icon down
     if (!this.hidden) {
       var half_mass = this.mass/2;
-      blend(nodeIcoDark,0,0,nodeIcoDark.width,nodeIcoDark.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
+      blend(nodeIcoDark,0,0,nodeIcoDark.width,nodeIcoDark.height,int(this.x-half_mass),int(this.y-half_mass),int(this.mass),int(this.mass),DARKEST);  
         
     }
   }
@@ -384,7 +384,7 @@ function GNode(Id) {
     // stamp node specular
     if (!this.hidden) {
       var half_mass = this.mass/2;
-      blend(nodeIcoSpec,0,0,nodeIcoSpec.width,nodeIcoSpec.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),LIGHTEST);  
+      blend(nodeIcoSpec,0,0,nodeIcoSpec.width,nodeIcoSpec.height,int(this.x-half_mass),int(this.y-half_mass),int(this.mass),int(this.mass),LIGHTEST);  
     }
   }
 
@@ -392,7 +392,7 @@ function GNode(Id) {
     // stamp node base
     if (!this.hidden) {
       var half_mass = this.mass/2;
-      blend(nodeIcoBase,0,0,nodeIcoBase.width,nodeIcoBase.height,int(x-half_mass),int(y-half_mass),int(mass),int(mass),DARKEST);  
+      blend(nodeIcoBase,0,0,nodeIcoBase.width,nodeIcoBase.height,int(this.x-half_mass),int(this.y-half_mass),int(this.mass),int(this.mass),DARKEST);  
     }
   }
       

@@ -402,6 +402,11 @@ GNode.prototype.drawNodeBase = function () {
     
                 
 GNode.prototype.drawConnections = function () {
+  
+  var r = red(this.myc);
+  var g = green(this.myc);
+  var b = blue(this.myc);
+
   for (var n=0;n<this.numcons;n++) {
     // calculate connection distance
     var d = 4*dist(this.x,this.y,gnodes[this.cons[n]].x,gnodes[this.cons[n]].y);
@@ -414,7 +419,7 @@ GNode.prototype.drawConnections = function () {
       var cx = fx + this.x+(gnodes[this.cons[n]].x-this.x)*a;
       var cy = fy + this.y+(gnodes[this.cons[n]].y-this.y)*a;
       
-      stroke(red(this.myc),green(this.myc),blue(this.myc),256*(0.05+(1-sin(a*PI))*0.16));
+      stroke(r,g,b,256*(0.05+(1-sin(a*PI))*0.16));
       point(cx,cy);
     }
   }   

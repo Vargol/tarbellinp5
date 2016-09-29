@@ -121,17 +121,14 @@ function Crack () {
   // sand painter
   var sp;
 
-  var strokeColour = color(0,0,0,84);
-  
-  this.findStart = findStart;
-  this.move = move;
-  this.startCrack = startCrack;
-  this.regionColor = regionColor;
-  
-  findStart();
-  sp = new SandPainter();
-  
-  function findStart() {
+  var strokeColour
+
+  this.strokeColour = color(0,0,0,84);  
+  this.findStart();
+  this.sp = new SandPainter();
+ }
+ 
+  Crack.prototype.findStart = function () {
     // pick random point
     var px=0;
     var py=0;
@@ -155,70 +152,70 @@ function Crack () {
       } else {
         a+=90+int(random(-2,2.1));
       }
-      startCrack(px,py,a);
+      this.startCrack(px,py,a);
     } else {
       //println("timeout: "+timeout);
     }
   }
    
-  function startCrack( X,  Y,  T) {
+  Crack.prototype.startCrack = function ( X,  Y,  T) {
       
     crackCount++;
 
-    x=X;
-    y=Y;
-    t=T;//%360;
-    x+=0.61*cos(t*PI/180);
-    y+=0.61*sin(t*PI/180);  
+    this.x=X;
+    this.y=Y;
+    this.t=T;//%360;
+    this.x+=0.61*cos(this.t*PI/180);
+    this.y+=0.61*sin(this.t*PI/180);  
   }
              
-  function move() {
+  Crack.prototype.move = function() {
     // continue cracking
-    x+=0.42*cos(t*PI/180);
-    y+=0.42*sin(t*PI/180); 
+    this.x+=0.42*cos(this.t*PI/180);
+    this.y+=0.42*sin(this.t*PI/180); 
     
     // bound check
     var z = 0.33;
-    var cx = int(x+random(-z,z));  // add fuzz
-    var cy = int(y+random(-z,z));
+    var cx = int(this.x+random(-z,z));  // add fuzz
+    var cy = int(this.y+random(-z,z));
     
     // draw sand painter
-    regionColor();
+    this.regionColor();
     
     // draw black crack
 //    stroke(0,85);
-    stroke(strokeColour);
-    point(x+random(-z,z),y+random(-z,z));
+    stroke(this.strokeColour);
+    point(this.x+random(-z,z),this.y+random(-z,z));
     
     
     if ((cx>=0) && (cx<dimx) && (cy>=0) && (cy<dimy)) {
       // safe to check
-      if ((cgrid[cy*dimx+cx]>10000) || (abs(cgrid[cy*dimx+cx]-t)<5)) {
+      if ((cgrid[cy*dimx+cx]>10000) || (abs(cgrid[cy*dimx+cx]-this.t)<5)) {
         // continue cracking
-        cgrid[cy*dimx+cx]=int(t);
-      } else if (abs(cgrid[cy*dimx+cx]-t)>2) {
+        cgrid[cy*dimx+cx]=int(this.t);
+      } else if (abs(cgrid[cy*dimx+cx]-this.t)>2) {
         // crack encountered (not self), stop cracking
-        findStart();
+        this.findStart();
         makeCrack();
       }
     } else {
       // out of bounds, stop cracking
-      findStart();
+      this.findStart();
       makeCrack();
     }
   }
   
-  function regionColor() {
+  Crack.prototype.regionColor = function() {
     // start checking one step away
-    var rx=x;
-    var ry=y;
+    var rx=this.x;
+    var ry=this.y;
     var openspace=true;
     
     // find extents of open space
     while (openspace) {
       // move perpendicular to crack
-      rx+=0.81*sin(t*PI/180);
-      ry-=0.81*cos(t*PI/180);
+      rx+=0.81*sin(this.t*PI/180);
+      ry-=0.81*cos(this.t*PI/180);
       var cx = int(rx);
       var cy = int(ry);
       if ((cx>=0) && (cx<dimx) && (cy>=0) && (cy<dimy)) {
@@ -233,48 +230,54 @@ function Crack () {
       }
     }
     // draw sand painter
-    sp.render(rx,ry,x,y);
+    this.sp.render(rx,ry,this.x,this.y);
   }
-}
+
 
 
 function SandPainter () {
 
   var c;
   var g;
-  var colours = [];
-  var grains = 64;
+  var colours;
+  var grains;
   
-  c = somecolor();
-  g = random(0.01,0.1);
+  this.colours = [];
+  this.grains = 64;
+  this.c = somecolor();
+  this.g = random(0.01,0.1);
+  
+  var r = red(this.c);
+  var g = green(this.c);
+  var b = blue(this.c);
     
-  for (var i=0;i<grains;i++) {
-      var a = 0.1-i/(grains*10.0);
-      colours[i] = color(red(c),green(c),blue(c),a*256);
-  }
-  
-  this.render = render;
-  
-  function render( x,  y,  ox,  oy) {
-    // modulate gain
-    g+=random(-0.050,0.050);
-    var maxg = 1.0;
-    if (g<0) g=0;
-    if (g>maxg) g=maxg;
-    
-    // calculate grains by distance
-    //var grains = int(sqrt((ox-x)*(ox-x)+(oy-y)*(oy-y)));
-    var grains = 64;
-
-    // lay down grains of sand (transparent pixels)
-    var w = g/(grains-1);
-    for (var i=0;i<grains;i++) {
-      stroke(colours[i]);
-      point(ox+(x-ox)*sin(sin(i*w)),oy+(y-oy)*sin(sin(i*w)));
-    }
+  for (var i=0;i<this.grains;i++) {
+      var a = 0.1-i/(this.grains*10.0);
+      this.colours[i] = color(r,g,b,a*256);
   }
   
 }
+  
+SandPainter.prototype.render = function render( x,  y,  ox,  oy) {
+
+	// modulate gain
+	this.g+=random(-0.050,0.050);
+	var maxg = 1.0;
+	if (this.g<0) this.g=0;
+	if (this.g>maxg) this.g=maxg;
+
+	// calculate grains by distance
+	//var grains = int(sqrt((ox-x)*(ox-x)+(oy-y)*(oy-y)));
+	var grains = 64;
+
+	// lay down grains of sand (transparent pixels)
+	var w = this.g/(grains-1);
+	for (var i=0;i<grains;i++) {
+	  stroke(this.colours[i]);
+	  point(ox+(x-ox)*sin(sin(i*w)),oy+(y-oy)*sin(sin(i*w)));
+	}
+}
+
 
 // j.tarbell   June, 2004
 // Albuquerque, New Mexico

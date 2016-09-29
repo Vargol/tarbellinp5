@@ -110,7 +110,7 @@ function takecolor() {
       var c = get(x,y);
       var exists = false;
       for (var n=0;n<numpal;n++) {
-        if (c==goodcolor[n]) {
+        if (c[0]==goodcolor[n][0] && c[1]==goodcolor[n][1] && c[2]==goodcolor[n][2]) {
           exists = true;
           break;
         }
